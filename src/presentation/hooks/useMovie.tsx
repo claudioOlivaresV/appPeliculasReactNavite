@@ -1,46 +1,47 @@
-import { useEffect, useState } from 'react';
-import * as UseCases from '../../core/use-cases';
-import { movieDBFetcher } from '../../config/adapters/movieDB.adapter';
-import { FullMovie } from '../../core/entities/movie.entity';
-import { Cast } from '../../core/entities/cast.entity';
+import {useEffect, useState} from 'react';
+import {Movie} from '../../core/entities/movie.entity';
+import {mpviesNewPlayingUseCase} from '../../core/use-cases/movies/now-playing.use-case';
+import {movieDBFetcher} from '../../config/adapters/movieDB.adapter';
+import {popularUseCase} from '../../core/use-cases/movies/popular.use-case';
+import {topRatedUseCase} from '../../core/use-cases/movies/top-rated.use-case';
+import {upcomingUseCase} from '../../core/use-cases/movies/upcoming.use-case';
 
-
-export const useMovie = ( movieId: number ) => {
-  
+export const useMovie = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const [movie, setMovie] = useState<FullMovie>();
-  const [cast, setCast] = useState<Cast[]>();
-
+  const [nowPlaying, setnowPlaying] = useState<Movie[]>([]);
+  const [popular, setPopular] = useState<Movie[]>([]);
+  const [topRated, setTopRated] = useState<Movie[]>([]);
+  const [upcoming, setUpcoming] = useState<Movie[]>([]);
 
   useEffect(() => {
-    loadMovie();    
-  }, [movieId]);
+    initalLoad();
+  }, []);
 
+  const initalLoad = async () => {
+    const nowPlayingMoviesPromise = mpviesNewPlayingUseCase(movieDBFetcher);
+    const popularPromise = popularUseCase(movieDBFetcher);
+    const topRatedPromise = topRatedUseCase(movieDBFetcher);
+    const upcomingPromise = upcomingUseCase(movieDBFetcher);
 
-  const loadMovie = async() => {
-    setIsLoading(true);
-
-    const fullMoviePromise = UseCases.getMovieByIdUseCase(movieDBFetcher, movieId);
-    const castPromise = UseCases.getMovieCastUseCase(movieDBFetcher, movieId);
-    
-    const [ fullMovie, cast ] = await Promise.all([ fullMoviePromise, castPromise ]);
-
-    setMovie(fullMovie);
-    setCast( cast );
-
+    const [nowPlayingMovies, popularMovies, topRatedMovies, upcomingMovies] =
+      await Promise.all([
+        nowPlayingMoviesPromise,
+        popularPromise,
+        topRatedPromise,
+        upcomingPromise,
+      ]);
+    setnowPlaying(nowPlayingMovies);
+    setPopular(popularMovies);
+    setTopRated(topRatedMovies);
+    setUpcoming(upcomingMovies);
     setIsLoading(false);
-    
-  }
-  
-
-
-
-
-
+  };
 
   return {
     isLoading,
-    movie,
-    cast,
-  }
-}
+    nowPlaying,
+    popular,
+    topRated,
+    upcoming,
+  };
+};
