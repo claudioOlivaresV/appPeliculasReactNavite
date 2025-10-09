@@ -5,9 +5,14 @@ import {Movie} from '../../entities/movie.entity';
 
 export const popularUseCase = async (
   fectcher: HttpAdapter,
+  options?: any,
 ): Promise<Movie[]> => {
   try {
-    const popular = await fectcher.get<PopularResponse>('/popular');
+    const popular = await fectcher.get<PopularResponse>('/popular', {
+      params: {
+        page: options?.page ?? 1,
+      },
+    });
     console.log(popular);
     return popular.results.map(resutl =>
       MovieMapper.fromMovieDBresultToEntity(resutl),
