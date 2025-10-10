@@ -93,3 +93,24 @@ export interface Collection {
   poster_path: string | null;
   backdrop_path: string | null;
 }
+
+export interface CastResponse {
+  id: number;
+  cast: CastMember[];
+  crew: CastMember[];
+}
+
+export interface CastMember {
+  adult: boolean;
+  gender: number;
+  id: number;
+  known_for_department: string;
+  name: string;
+  original_name: string;
+  popularity: number;
+  profile_path: string | null;
+  cast_id: number;
+  character: string;
+  credit_id: string;
+  order: number;
+}

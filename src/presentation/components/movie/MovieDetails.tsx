@@ -7,7 +7,7 @@ import {CastActor} from '../cast/CastActor';
 import React from 'react';
 interface Props {
   movie: FullMovie;
-  cast: Cast[];
+  cast?: Cast[];
 }
 
 export const MovieDetails = ({movie, cast}: Props) => {
@@ -29,7 +29,7 @@ export const MovieDetails = ({movie, cast}: Props) => {
           Presupuesto
         </Text>
 
-        <Text style={{fontSize: 18}}>{Formatter.currency(movie.budget)}</Text>
+        <Text style={{fontSize: 18}}>{Formatter.currecy(movie.budget)}</Text>
       </View>
 
       {/* Casting */}
@@ -43,7 +43,6 @@ export const MovieDetails = ({movie, cast}: Props) => {
           }}>
           Actores
         </Text>
-
         <FlatList
           data={cast}
           keyExtractor={item => item.id.toString()}

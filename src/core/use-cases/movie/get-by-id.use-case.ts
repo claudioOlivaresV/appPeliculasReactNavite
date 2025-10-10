@@ -1,8 +1,7 @@
-import React from 'react';
 import {HttpAdapter} from '../../../config/adapters/http/http.adapter';
-import {NowPlayingResponse, ResultOneMovie} from '../../../infrastructure/interfaces/movie-db.responses';
+import {ResultOneMovie} from '../../../infrastructure/interfaces/movie-db.responses';
 import {MovieMapper} from '../../../infrastructure/mappers/movie.mapper';
-import {FullMovie, Movie} from '../../entities/movie.entity';
+import {FullMovie} from '../../entities/movie.entity';
 
 export const getByIdUseCase = async (
   fectcher: HttpAdapter,
@@ -10,7 +9,6 @@ export const getByIdUseCase = async (
 ): Promise<FullMovie> => {
   try {
     console.log(movieId);
-    
     const movie = await fectcher.get<ResultOneMovie>(`/${movieId}`);
     console.log(movie, 'movie');
     const fullMovie = MovieMapper.fromMovieDBToEntity(movie);
